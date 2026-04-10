@@ -5,11 +5,12 @@ from utils.emiters import calculate_emitter_coordinates
 from utils.bresenham import get_bresenham_pixels
 from utils.pixels_sum import filter_sum_nornmalize
 
-def scan_generate_sinogram(N_detectors, distance_between_emitters, angle_coverage, N_scans, img_matrix):
+def scan_generate_sinogram(N_detectors, l, angle_coverage, N_scans, img_matrix):
     sinogram = []
     angle = 0
     img_height, img_width = img_matrix.shape
     radius = math.sqrt(pow(img_width,2)+pow(img_height, 2))/2
+    distance_between_emitters = l/N_detectors
 
     while angle <= angle_coverage:
         #głowica w nowej pozycji

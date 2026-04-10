@@ -17,13 +17,15 @@ def show_image(output_img_matrix):
     plt.axis('off')
     plt.show()
 
-def reconstruct_image(angle_coverage, img_matrix, N_detectors, distance_between_emiters, N_scans, sinogram, rescale):
+def reconstruct_image(angle_coverage, img_matrix, N_detectors, l, N_scans, sinogram, rescale):
     angle = 0
     sinogram_row_counter = 0
 
     img_height, img_width = img_matrix.shape
     output_img_matrix = [[0 for _ in range(img_width)] for _ in range(img_height)]
     ray_counter_matrix = [[0 for _ in range(img_width)] for _ in range(img_height)]
+
+    distance_between_emiters = l/N_detectors
 
     while angle <= angle_coverage:
         #głowica w nowej pozycji
