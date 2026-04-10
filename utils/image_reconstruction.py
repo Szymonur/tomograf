@@ -13,7 +13,11 @@ def add_ray_trace(brightness, pixels, output_img_matrix, ray_counter_matrix, mat
             ray_counter_matrix[pixel_cords[1]][pixel_cords[0]] += 1
 
 def show_image(output_img_matrix):
-    plt.imshow(output_img_matrix, cmap='gray')
+    h, w = output_img_matrix.shape
+    target_width = 6
+    target_height = target_width * (h / w)
+    plt.figure(figsize=(target_width, target_height))
+    plt.imshow(output_img_matrix, cmap='gray', aspect='auto')
     plt.axis('off')
     plt.show()
 
@@ -46,7 +50,7 @@ def reconstruct_image(angle_coverage, img_matrix, N_detectors, distance_between_
             if ray_counter_matrix[y][x] != 0:
                 output_img_matrix[y][x] = output_img_matrix[y][x]/ray_counter_matrix[y][x]
 
-    p_low, p_high = np.percentile(output_img_matrix, (50, 98))
+    p_low, p_high = np.percentile(output_img_matrix, (30, 98))
     output_array = np.array(output_img_matrix)
 
     if rescale:

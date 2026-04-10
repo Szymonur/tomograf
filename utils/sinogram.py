@@ -29,11 +29,10 @@ def scan_generate_sinogram(N_detectors, distance_between_emitters, angle_coverag
 
 def show_sinogram(sinogram_matrix):
     sinogram_np = np.array(sinogram_matrix)
-
-    plt.figure(figsize=(18, 8))
-    # aspect='auto' jest kluczowe! 
-    # Bez tego, jeśli masz np. 180 skanów i 720 detektorów, 
-    # obrazek będzie bardzo wąskim paskiem.
+    h, w = sinogram_np.shape
+    target_width = 6
+    target_height = target_width * (h / w)
+    plt.figure(figsize=(target_width, target_height))
     plt.imshow(sinogram_np, cmap='gray', aspect='auto')
 
     plt.xlabel("Indeks detektora")
