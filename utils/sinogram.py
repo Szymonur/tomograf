@@ -5,12 +5,11 @@ from utils.emiters import calculate_emitter_coordinates
 from utils.bresenham import get_bresenham_pixels
 from utils.pixels_sum import filter_sum_nornmalize
 
-def scan_generate_sinogram(N_detectors, l, angle_coverage, N_scans, img_matrix):
+def scan_generate_sinogram(N_detectors, distance_between_emitters, angle_coverage, N_scans, img_matrix):
     sinogram = []
     angle = 0
     img_height, img_width = img_matrix.shape
     radius = math.sqrt(pow(img_width,2)+pow(img_height, 2))/2
-    distance_between_emitters = l/N_detectors
 
     while angle <= angle_coverage:
         #głowica w nowej pozycji
@@ -30,11 +29,10 @@ def scan_generate_sinogram(N_detectors, l, angle_coverage, N_scans, img_matrix):
 
 def show_sinogram(sinogram_matrix):
     sinogram_np = np.array(sinogram_matrix)
-
-    plt.figure(figsize=(18, 8))
-    # aspect='auto' jest kluczowe! 
-    # Bez tego, jeśli masz np. 180 skanów i 720 detektorów, 
-    # obrazek będzie bardzo wąskim paskiem.
+    h, w = sinogram_np.shape
+    target_width = 6
+    target_height = target_width * (h / w)
+    plt.figure(figsize=(target_width, target_height))
     plt.imshow(sinogram_np, cmap='gray', aspect='auto')
 
     plt.xlabel("Indeks detektora")
