@@ -2,8 +2,38 @@ import os
 import datetime
 import numpy as np
 import pydicom
+import matplotlib.pyplot as plt
 from pydicom.dataset import Dataset, FileDataset
 from pydicom.uid import ExplicitVRLittleEndian, CTImageStorage, generate_uid
+
+def load_dicom_file(file_path, display=True):
+    # Wczytanie całego zbioru danych
+    ds = pydicom.dcmread(file_path)
+    
+    # 1. Pobranie danych pacjenta i komentarza
+    patient_data = {
+        'name': str(ds.PatientName),
+        'id': str(ds.PatientID),
+        'comment': getattr(ds, 'ImageComments', '')
+    }
+    
+    # 2. Pobranie macierzy pikseli
+    image_matrix = ds.pixel_array.astype(np.float64)
+    
+    # 3. Normalizacja powrotna do zakresu [0, 1]
+    # (Zakładając, że zapisaliśmy jako uint16 0-65535)
+    if image_matrix.max() > 0:
+        image_matrix = image_matrix / 65535.0
+        
+
+    if display == True:
+        print(f"Pacjent: {patient_data['name']} | ID: {patient_data['id']}")
+        plt.imshow(image_matrix, cmap='gray')
+        plt.title(f"Komentarz: {patient_data['comment']}")
+        plt.axis('off') # Ukrywa osie (liczby pikseli) dla estetyki
+        plt.show()
+    else:
+        return image_matrix, patient_data
 
 def save_reconstruction_to_dicom(image_matrix, patient_name="Kowalski^Jan", patient_id="pacjent0", comment="No comment given"):
     # 1. Przygotowanie macierzy (skalowanie float 0-1 do uint16)
