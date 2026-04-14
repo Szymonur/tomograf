@@ -11,6 +11,7 @@ from utils.bresenham import get_bresenham_pixels
 from utils.image_reconstruction import add_ray_trace
 from utils.filter import filter_sinogram
 from utils.sinogram import scan_generate_sinogram
+from utils.metrics import calculate_rmse
 
 def interactive_tomograph(img_matrix, N_detectors, distance_between_emitters, angle_coverage, N_scans, use_filter=True):
     print("Trwa prekomputacja pełnego sinogramu. Proszę czekać...")
@@ -84,7 +85,14 @@ def interactive_tomograph(img_matrix, N_detectors, distance_between_emitters, an
                 display_img = exposure.rescale_intensity(display_img, in_range=(p_low, p_high), out_range=(0, 1))
 
         ax2.imshow(display_img, cmap='gray')
-        ax2.set_title("Rekonstrukcja (w toku)")
+        
+        # Obliczanie RMSE jeśli mamy już jakieś dane
+        if np.any(mask):
+            rmse_val = calculate_rmse(img_matrix, display_img)
+            ax2.set_title(f"Rekonstrukcja (RMSE: {rmse_val:.4f})")
+        else:
+            ax2.set_title("Rekonstrukcja (w toku)")
+        
         ax2.axis('off')
         
         plt.tight_layout()

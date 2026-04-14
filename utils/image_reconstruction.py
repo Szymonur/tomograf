@@ -6,6 +6,8 @@ from skimage import exposure
 from utils.emiters import calculate_emitter_coordinates
 from utils.bresenham import get_bresenham_pixels
 
+from utils.metrics import calculate_rmse
+
 def add_ray_trace(brightness, pixels, output_img_matrix, ray_counter_matrix, matrix_shape):
     for pixel_cords in pixels:
         if pixel_cords[0] >= 0 and pixel_cords[0] < matrix_shape[1] and pixel_cords[1] >= 0 and pixel_cords[1] < matrix_shape[0]:
@@ -55,7 +57,14 @@ def reconstruct_image(angle_coverage, img_matrix, N_detectors, distance_between_
 
     if rescale:
         rescaled_img = exposure.rescale_intensity(output_array, in_range=(p_low, p_high), out_range=(0, 1))
+        
+        rmse_val = calculate_rmse(img_matrix, rescaled_img)
+        print(f"RMSE (z reskalowaniem): {rmse_val:.4f}")
+        
         return rescaled_img
+    
+    rmse_val = calculate_rmse(img_matrix, output_array)
+    print(f"RMSE (bez reskalowania): {rmse_val:.4f}")
         
     return output_array
 
